@@ -1,0 +1,50 @@
+name: Bug report / Song mismatch
+description: Report a wrong song match, playback issue, or UI bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Issue type
+      options:
+        - Wrong audio track matched (mismatch)
+        - Music video did not switch to audio
+        - Popup / UI issue
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: mv-url
+    attributes:
+      label: Original YouTube Music URL (music video)
+      description: Paste the URL of the music video that triggered the issue.
+      placeholder: https://music.youtube.com/watch?v=...
+    validations:
+      required: false
+
+  - type: input
+    id: atv-url
+    attributes:
+      label: Matched / Expected audio track URL
+      description: If YTM Lite picked the wrong version, paste what it played and/or the official album track URL.
+      placeholder: "Played: https://music.youtube.com/watch?v=... | Expected: https://music.youtube.com/watch?v=..."
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser & Extension version
+      placeholder: Chrome 131 / YTM Lite v1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened?
+      description: Steps to reproduce, console logs (if any), or screenshots.
+    validations:
+      required: true

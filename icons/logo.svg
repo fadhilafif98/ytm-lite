@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <defs>
+    <linearGradient id="coreRed" x1="30" y1="22" x2="98" y2="106" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF3D5E"/>
+      <stop offset="100%" stop-color="#DF1942"/>
+    </linearGradient>
+    <linearGradient id="frameSlate" x1="8" y1="34" x2="120" y2="94" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E3E6ED"/>
+      <stop offset="100%" stop-color="#BFC6D4"/>
+    </linearGradient>
+    <filter id="coreShadow" filterUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0F1117" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <!-- Wide muted 16:9 video frame being compressed horizontally -->
+  <rect x="8" y="34" width="112" height="60" rx="13" fill="url(#frameSlate)"/>
+
+  <!-- Left & right inward compression chevrons -->
+  <path d="M16 54 L26 64 L16 74" stroke="#5A6373" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M112 54 L102 64 L112 74" stroke="#5A6373" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Compressed 1:1 Crimson Album Audio Core -->
+  <rect x="31" y="22" width="66" height="84" rx="16" fill="url(#coreRed)" filter="url(#coreShadow)"/>
+
+  <!-- Crisp White Musical Note -->
+  <path
+    d="M65 40 V67.5 C63.2 66.6, 61.1 66.1, 58.8 66.1 C52.7 66.1, 48 70.1, 48 75.1 C48 80.1, 52.7 84.1, 58.8 84.1 C65.1 84.1, 70.2 79.8, 70.2 74.3 V52 L82 49.2 V39.8 L67.4 43.2 C66 43.5, 65 42.1, 65 40 Z"
+    fill="#FFFFFF"
+  />
+</svg>

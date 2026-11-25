@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script src="theme-init.js"></script>
+  <title>YTM Lite</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body data-loading="true">
+  <div class="popup-shell">
+    <header class="popup-header">
+      <div class="brand">
+        <img class="brand-logo" src="icons/logo.svg" alt="" width="24" height="24" aria-hidden="true">
+        <div class="brand-text">
+          <h1 class="brand-name">YTM Lite</h1>
+          <span class="brand-sub">Audio-only mode</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span class="status-pill" id="statusBadge" role="status" aria-live="polite">
+          <svg class="status-icon status-icon-on" viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="3.5" fill="currentColor"/>
+            <circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"/>
+          </svg>
+          <svg class="status-icon status-icon-off" viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
+            <rect x="4.5" y="3.5" width="2.5" height="9" rx="1" fill="currentColor"/>
+            <rect x="9" y="3.5" width="2.5" height="9" rx="1" fill="currentColor"/>
+          </svg>
+          <span id="statusText">Active</span>
+        </span>
+
+        <button type="button" class="icon-btn" id="themeToggleBtn">
+          <span class="theme-option theme-option-light">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+            </svg>
+            <span class="sr-only">Switch to light theme</span>
+          </span>
+          <span class="theme-option theme-option-dark">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+            </svg>
+            <span class="sr-only">Switch to dark theme</span>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <main class="popup-content">
+      <!-- Playback Controls Card -->
+      <section class="card" aria-labelledby="playbackHeading">
+        <div class="card-body">
+          <div class="card-head">
+            <h2 class="card-title" id="playbackHeading">Playback</h2>
+            <span class="card-meta" id="playbackModeMeta">Album audio preferred</span>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-copy">
+              <label class="setting-label" for="enabledToggle">Don't play music videos</label>
+              <p class="setting-hint">Automatically switch music videos to official album audio</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" role="switch" id="enabledToggle">
+              <span class="switch-track" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <hr class="card-divider">
+
+          <div class="setting-row" id="fallbackRow">
+            <div class="setting-copy">
+              <label class="setting-label" for="fallbackToggle">Hide video fallback</label>
+              <p class="setting-hint">Show square cover art when no album audio version exists</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" role="switch" id="fallbackToggle">
+              <span class="switch-track" aria-hidden="true"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Song Cache Card -->
+      <section class="card" aria-labelledby="cacheHeading">
+        <div class="card-body">
+          <div class="card-head">
+            <h2 class="card-title" id="cacheHeading">Song cache</h2>
+            <span class="cache-badge" id="cacheBadge" data-state="empty">
+              <svg class="cache-badge-icon" viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="8" r="6"/>
+                <path d="M5.5 8.2 7.2 9.9 10.6 6.3"/>
+              </svg>
+              <span id="cacheBadgeText">Empty</span>
+            </span>
+          </div>
+
+          <div class="quota-block">
+            <div class="quota-row">
+              <span class="quota-label">Mapped tracks</span>
+              <div class="quota-values">
+                <span class="quota-count" id="cacheCount">0 / 2,500</span>
+                <span class="quota-pct" id="cachePercent">0%</span>
+              </div>
+            </div>
+            <progress
+              class="cache-progress"
+              id="cacheProgress"
+              value="0"
+              max="2500"
+              aria-label="Cached song mappings"
+            ></progress>
+            <div class="quota-footnote">
+              <span id="cacheSize">0 B local</span>
+              <span class="meta-sep" aria-hidden="true"></span>
+              <span>30-day retention</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="card-footer-hint">Instant swap on revisit</span>
+          <button type="button" class="outline-btn" id="clearCacheBtn" disabled>
+            <svg class="btn-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+            </svg>
+            <span id="clearCacheLabel">Clear cache</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="popup-footer">
+      <div class="footer-meta">
+        <div class="footer-version">
+          <span class="footer-version-label">Version</span>
+          <span class="footer-version-num" id="extVersion">1.0.0</span>
+        </div>
+        <span class="footer-privacy">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          Local only
+        </span>
+      </div>
+
+      <a
+        class="footer-cta"
+        href="https://music.youtube.com"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>Open YouTube Music</span>
+      </a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
