@@ -6,7 +6,7 @@
 
   <p>
     <a href="https://github.com/fadhilafif98/ytm-lite/releases/latest">
-      <img src="https://img.shields.io/badge/version-1.1.0-FF2E54?style=flat-square" alt="Version 1.1.0">
+      <img src="https://img.shields.io/badge/version-1.1.1-FF2E54?style=flat-square" alt="Version 1.1.1">
     </a>
     <img src="https://img.shields.io/badge/manifest-v3-1A1D27?style=flat-square&logo=googlechrome&logoColor=white" alt="Manifest V3">
     <img src="https://img.shields.io/badge/browsers-Chrome%20%7C%20Edge%20%7C%20Brave%20%7C%20Arc-2A2E3B?style=flat-square" alt="Supported Browsers">

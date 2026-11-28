@@ -38,17 +38,35 @@ jobs:
           npm ci
           npm run qa
 
-      - name: Package extension zip
+      - name: Package extension zips (Chrome & Firefox)
         run: |
           TAG="${GITHUB_REF_NAME}"
           STAGE="release-stage/ytm-lite"
           mkdir -p release-stage
           cp -r dist "$STAGE"
           (cd release-stage && zip -r "../ytm-lite-${TAG}.zip" ytm-lite)
+          (cd dist-firefox && zip -r "../ytm-lite-firefox-${TAG}.zip" .)
           unzip -l "ytm-lite-${TAG}.zip"
+          unzip -l "ytm-lite-firefox-${TAG}.zip"
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          node -e '
+            const fs = require("node:fs");
+            const ver = process.argv[1];
+            const sections = fs.readFileSync("CHANGELOG.md", "utf8").split(/^## \[/m).slice(1);
+            const match = sections.find((s) => s.startsWith(ver + "]"));
+            const body = match ? match.slice(match.indexOf("\n") + 1).trim() : `Release v${ver}`;
+            fs.writeFileSync("release-notes.md", body + "\n");
+          ' "$VER"
+          cat release-notes.md
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          body_path: release-notes.md
           generate_release_notes: true
-          files: ytm-lite-${{ github.ref_name }}.zip
+          files: |
+            ytm-lite-${{ github.ref_name }}.zip
+            ytm-lite-firefox-${{ github.ref_name }}.zip

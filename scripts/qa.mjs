@@ -61,12 +61,23 @@ execFileSync(process.execPath, [tscBin, '--noEmit', '-p', path.join(rootDir, 'ts
 });
 pass('TypeScript typecheck');
 
-// 3. Build dist/
+// 3. Build dist/ and dist-firefox/
 execFileSync(process.execPath, [path.join(rootDir, 'scripts', 'build.mjs')], {
   cwd: rootDir,
   stdio: 'inherit'
 });
-pass('Build dist/');
+execFileSync(process.execPath, [path.join(rootDir, 'scripts', 'build.mjs'), '--target=firefox'], {
+  cwd: rootDir,
+  stdio: 'inherit'
+});
+const firefoxManifest = JSON.parse(fs.readFileSync(path.join(rootDir, 'dist-firefox', 'manifest.json'), 'utf8'));
+if (firefoxManifest.minimum_chrome_version !== undefined) {
+  fail('dist-firefox/manifest.json must not include minimum_chrome_version');
+}
+if (!firefoxManifest.browser_specific_settings?.gecko?.id || !firefoxManifest.browser_specific_settings?.gecko?.strict_min_version) {
+  fail('dist-firefox/manifest.json missing browser_specific_settings.gecko.id or strict_min_version');
+}
+pass('Build dist/ & dist-firefox/');
 
 // 4. Manifest V3, version sync, minimal permissions, icons & asset refs
 const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
