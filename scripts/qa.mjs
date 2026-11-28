@@ -74,8 +74,12 @@ const firefoxManifest = JSON.parse(fs.readFileSync(path.join(rootDir, 'dist-fire
 if (firefoxManifest.minimum_chrome_version !== undefined) {
   fail('dist-firefox/manifest.json must not include minimum_chrome_version');
 }
-if (!firefoxManifest.browser_specific_settings?.gecko?.id || !firefoxManifest.browser_specific_settings?.gecko?.strict_min_version) {
-  fail('dist-firefox/manifest.json missing browser_specific_settings.gecko.id or strict_min_version');
+if (
+  !firefoxManifest.browser_specific_settings?.gecko?.id ||
+  !firefoxManifest.browser_specific_settings?.gecko?.strict_min_version ||
+  !Array.isArray(firefoxManifest.browser_specific_settings?.gecko?.data_collection_permissions?.required)
+) {
+  fail('dist-firefox/manifest.json missing browser_specific_settings.gecko required fields (id, strict_min_version, data_collection_permissions)');
 }
 pass('Build dist/ & dist-firefox/');
 

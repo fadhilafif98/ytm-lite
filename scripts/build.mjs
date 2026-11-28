@@ -48,7 +48,10 @@ function transformManifestForFirefox() {
   manifest.browser_specific_settings = {
     gecko: {
       id: 'ytm-lite@fadhilafif98.github.io',
-      strict_min_version: '128.0'
+      strict_min_version: '128.0',
+      data_collection_permissions: {
+        required: ['none']
+      }
     }
   };
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
