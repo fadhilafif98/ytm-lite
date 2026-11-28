@@ -1,0 +1,134 @@
+/* Audio-only square cover layout when hiding music videos, during swap, or on forced ATV mode (never hides ads) */
+html.ytm-lite-hide-video ytmusic-player:not([is-advertisement-playing]) #song-video,
+html.ytm-lite-swap-pending ytmusic-player:not([is-advertisement-playing]) #song-video,
+ytmusic-player[data-ytm-lite-atv="1"]:not([is-advertisement-playing]) #song-video {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Exact 1:1 square matching native YouTube Music album-art proportions across all track jumps.
+   Reset padding: 0 and disable YTM's ::before padding-top spacer so height never doubles to 2x width. */
+html.ytm-lite-hide-video ytmusic-player[player-ui-state="PLAYER_PAGE_OPEN"]:not([is-advertisement-playing]),
+html.ytm-lite-swap-pending ytmusic-player[player-ui-state="PLAYER_PAGE_OPEN"]:not([is-advertisement-playing]),
+ytmusic-player[data-ytm-lite-atv="1"][player-ui-state="PLAYER_PAGE_OPEN"]:not([is-advertisement-playing]),
+html.ytm-lite-hide-video ytmusic-player:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="FULLSCREEN"]):not([player-ui-state="PLAYER_BAR_ONLY"]):not([is-advertisement-playing]),
+html.ytm-lite-swap-pending ytmusic-player:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="FULLSCREEN"]):not([player-ui-state="PLAYER_BAR_ONLY"]):not([is-advertisement-playing]),
+ytmusic-player[data-ytm-lite-atv="1"]:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="FULLSCREEN"]):not([player-ui-state="PLAYER_BAR_ONLY"]):not([is-advertisement-playing]) {
+  --ytmusic-player-aspect-ratio: 1 !important;
+  --ytm-lite-art-size: min(100%, calc(100vh - 220px), 544px);
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  width: var(--ytm-lite-art-size) !important;
+  height: auto !important;
+  max-width: var(--ytm-lite-art-size) !important;
+  max-height: var(--ytm-lite-art-size) !important;
+  aspect-ratio: 1 / 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  margin: auto !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  background-color: #121212 !important;
+}
+
+html.ytm-lite-hide-video ytmusic-player[player-ui-state="PLAYER_PAGE_OPEN"]:not([is-advertisement-playing])::before,
+html.ytm-lite-swap-pending ytmusic-player[player-ui-state="PLAYER_PAGE_OPEN"]:not([is-advertisement-playing])::before,
+ytmusic-player[data-ytm-lite-atv="1"][player-ui-state="PLAYER_PAGE_OPEN"]:not([is-advertisement-playing])::before,
+html.ytm-lite-hide-video ytmusic-player:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="FULLSCREEN"]):not([player-ui-state="PLAYER_BAR_ONLY"]):not([is-advertisement-playing])::before,
+html.ytm-lite-swap-pending ytmusic-player:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="FULLSCREEN"]):not([player-ui-state="PLAYER_BAR_ONLY"]):not([is-advertisement-playing])::before,
+ytmusic-player[data-ytm-lite-atv="1"]:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="FULLSCREEN"]):not([player-ui-state="PLAYER_BAR_ONLY"]):not([is-advertisement-playing])::before {
+  padding-top: 0 !important;
+  content: none !important;
+}
+
+html.ytm-lite-hide-video ytmusic-player[player-ui-state="MINIPLAYER"]:not([is-advertisement-playing]),
+html.ytm-lite-swap-pending ytmusic-player[player-ui-state="MINIPLAYER"]:not([is-advertisement-playing]),
+ytmusic-player[data-ytm-lite-atv="1"][player-ui-state="MINIPLAYER"]:not([is-advertisement-playing]) {
+  --ytmusic-player-aspect-ratio: 1 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  width: var(--ytmusic-mini-player-height, 191px) !important;
+  height: var(--ytmusic-mini-player-height, 191px) !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  background-color: #121212 !important;
+}
+
+/* Keep cover art strictly 1:1 centered inside #song-image with zero 2x vertical stretch */
+html.ytm-lite-hide-video ytmusic-player:not([is-advertisement-playing]) #song-image,
+html.ytm-lite-swap-pending ytmusic-player:not([is-advertisement-playing]) #song-image,
+ytmusic-player[data-ytm-lite-atv="1"]:not([is-advertisement-playing]) #song-image {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+html.ytm-lite-hide-video ytmusic-player:not([is-advertisement-playing]) #song-image yt-img-shadow,
+html.ytm-lite-swap-pending ytmusic-player:not([is-advertisement-playing]) #song-image yt-img-shadow,
+ytmusic-player[data-ytm-lite-atv="1"]:not([is-advertisement-playing]) #song-image yt-img-shadow {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html.ytm-lite-hide-video ytmusic-player:not([is-advertisement-playing]) #song-image img,
+html.ytm-lite-swap-pending ytmusic-player:not([is-advertisement-playing]) #song-image img,
+ytmusic-player[data-ytm-lite-atv="1"]:not([is-advertisement-playing]) #song-image img {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: auto !important;
+  border-radius: 4px !important;
+  transition: opacity 150ms ease;
+}
+
+/* Prevent 16:9 MV frame blip at 0:00 while ATV swap is still resolving */
+html.ytm-lite-swap-pending ytmusic-player:not([is-advertisement-playing]) #song-image img:not([src*="googleusercontent.com"]) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+html.ytm-lite-hide-video ytmusic-player[player-ui-state="FULLSCREEN"]:not([is-advertisement-playing]) #song-image yt-img-shadow,
+html.ytm-lite-swap-pending ytmusic-player[player-ui-state="FULLSCREEN"]:not([is-advertisement-playing]) #song-image yt-img-shadow,
+ytmusic-player[data-ytm-lite-atv="1"][player-ui-state="FULLSCREEN"]:not([is-advertisement-playing]) #song-image yt-img-shadow {
+  max-width: min(70vh, 544px) !important;
+  max-height: min(70vh, 544px) !important;
+}
+
+html.ytm-lite-hide-video ytmusic-player[player-ui-state="FULLSCREEN"]:not([is-advertisement-playing]) #song-image img,
+html.ytm-lite-swap-pending ytmusic-player[player-ui-state="FULLSCREEN"]:not([is-advertisement-playing]) #song-image img,
+ytmusic-player[data-ytm-lite-atv="1"][player-ui-state="FULLSCREEN"]:not([is-advertisement-playing]) #song-image img {
+  object-fit: contain !important;
+}
+
+/* Polymer-safe hiding of video view/like stats on swapped ATV tracks */
+ytmusic-player-bar .byline [data-ytm-lite-hidden-stat="1"] {
+  display: none !important;
+}

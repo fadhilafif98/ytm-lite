@@ -17,33 +17,34 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
-      - name: Verify tag matches manifest.json version
+      - name: Verify tag matches manifest.json and package.json version
         run: |
           TAG="${GITHUB_REF_NAME}"
-          VER=$(node -p "require('./manifest.json').version")
+          VER=$(node -p "require('./public/manifest.json').version")
+          PKG_VER=$(node -p "require('./package.json').version")
+          if [ "$VER" != "$PKG_VER" ]; then
+            echo "public/manifest.json ($VER) does not match package.json ($PKG_VER)"
+            exit 1
+          fi
           if [ "$TAG" != "v$VER" ]; then
-            echo "Tag ($TAG) does not match manifest.json version (v$VER)"
+            echo "Tag ($TAG) does not match public/manifest.json version (v$VER)"
             exit 1
           fi
 
-      - name: Run checks and unit tests
+      - name: Install and run full QA gate
         run: |
-          for f in content.js inject.js popup.js theme-init.js src/*.js tests/*.js; do
-            node --check "$f"
-          done
-          node --test tests/*.test.js
+          npm ci
+          npm run qa
 
       - name: Package extension zip
         run: |
           TAG="${GITHUB_REF_NAME}"
-          STAGE="dist/ytm-lite"
-          mkdir -p "$STAGE/icons"
-          cp manifest.json content.js content.css inject.js popup.html popup.css popup.js theme-init.js "$STAGE/"
-          cp -r src "$STAGE/"
-          cp icons/icon-*.png "$STAGE/icons/"
-          if [ -f LICENSE ]; then cp LICENSE "$STAGE/"; fi
-          (cd dist && zip -r "../ytm-lite-${TAG}.zip" ytm-lite)
+          STAGE="release-stage/ytm-lite"
+          mkdir -p release-stage
+          cp -r dist "$STAGE"
+          (cd release-stage && zip -r "../ytm-lite-${TAG}.zip" ytm-lite)
           unzip -l "ytm-lite-${TAG}.zip"
 
       - name: Publish GitHub Release

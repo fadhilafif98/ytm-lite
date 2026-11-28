@@ -1,0 +1,20 @@
+{
+  "name": "ytm-lite",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Automatically play audio-only / album versions of songs instead of music videos on YouTube Music.",
+  "license": "GPL-3.0",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "zip": "node scripts/build.mjs --zip",
+    "test": "npm run build && node --test tests/*.test.js",
+    "qa": "node scripts/qa.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.38",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3"
+  }
+}

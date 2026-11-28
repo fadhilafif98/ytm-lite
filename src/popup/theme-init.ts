@@ -2,7 +2,7 @@
   try {
     const saved = localStorage.getItem('ytm-lite-color-scheme');
     if (saved === 'light' || saved === 'dark') {
-      const meta = document.querySelector('meta[name="color-scheme"]');
+      const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]');
       if (meta) {
         meta.content = saved;
       }

@@ -27,6 +27,12 @@
   </p>
 </div>
 
+> [!WARNING]
+> <details>
+>   <summary>YTM Lite is an unofficial browser extension that modifies YouTube Music's web playback requests.</summary>
+>   <p>YTM Lite hooks YouTube Music's internal web APIs (<code>/youtubei/v1/player</code>, <code>/next</code>, <code>/browse</code>) to switch music videos to official album audio tracks. It does <strong>not</strong> block ads, bypass YouTube Music Premium, or circumvent regional restrictions. Because it relies on undocumented client-side endpoints, YouTube Music updates may occasionally affect track matching or playback behavior. Use at your own risk.</p>
+> </details>
+
 <p align="center">
   <img src="assets/preview.png" alt="YTM Lite — Music videos out, album audio in" width="840">
 </p>
@@ -53,8 +59,7 @@ Music Video (OMV / UGC)
 
 | Feature | Behavior | Status |
 | --- | --- | :---: |
-| **Auto-switch to album audio** | Rewrites music videos (`OMV` / `UGC`) to official `ATV` album tracks before playback | ● |
-| **Rolling queue lookahead** | Pre-resolves the next 3 queued tracks in the background; cancels immediately on track skip | ● |
+| **Auto-switch to album audio** | Rewrites music videos (`OMV` / `UGC`) to official `ATV` album tracks on demand before playback | ● |
 | **Variant protection** | Keeps remixes, live sessions, acoustic, instrumental, slowed, and sped-up tracks intact | ● |
 | **Square album art & clean metadata** | Replaces 16:9 video thumbnails with `544×544` album covers and strips view/like counts | ● |
 | **Hide video fallback** | Displays clean square cover art when no official audio version exists (never hides ads) | ○ |
@@ -76,20 +81,23 @@ YTM Lite works on **Google Chrome (111+)**, **Microsoft Edge**, **Brave**, **Arc
 4. Click **Load unpacked** and select the extracted `ytm-lite` folder.
 5. Open [YouTube Music](https://music.youtube.com) — audio-only mode is active immediately.
 
-### Option 2: Clone from Source
+### Option 2: Build from Source
 
 ```bash
 git clone https://github.com/fadhilafif98/ytm-lite.git
+cd ytm-lite
+npm install
+npm run build
 ```
 
-Then load the cloned `ytm-lite` folder via **Load unpacked** in `chrome://extensions`.
+Then load the generated `dist/` folder via **Load unpacked** in `chrome://extensions`.
 
 > [!NOTE]
-> No build step, bundler, or `npm install` is required. YTM Lite is pure vanilla JavaScript, HTML, and CSS built directly for Manifest V3.
+> The extension is written in strict TypeScript ES modules (`*.ts`) and bundled directly into `dist/` with `esbuild` (zero runtime dependencies).
 
 ## Privacy & Permissions
 
-YTM Lite runs **100% locally** inside your browser. There are no external servers, no analytics, no telemetry, and no account credentials accessed or transmitted. Read the full disclosure in [PRIVACY.md](PRIVACY.md).
+YTM Lite runs **with zero tracking** inside your browser. There are no external developer servers, no analytics, and no telemetry; only your two toggle preferences sync via Chrome Sync (`chrome.storage.sync`), while your song mapping cache stays 100% local. Read the full disclosure in [PRIVACY.md](PRIVACY.md).
 
 | Permission / Scope | Why it is needed |
 | --- | --- |
@@ -103,25 +111,35 @@ YTM Lite runs **100% locally** inside your browser. There are no external server
 
 ```text
 ytm-lite/
-├── manifest.json       # Chrome Extension Manifest V3 definition
-├── inject.js           # MAIN-world fetch/XHR & YTMUSIC_INITIAL_DATA interceptor
-├── content.js          # Isolated-world settings bridge, cache sync & native Song toggle watcher
-├── content.css         # Audio-only 1:1 cover layout for fallback mode (preserves ads)
-├── popup.html          # Extension popup layout
-├── popup.css           # Adaptive Light/Dark design tokens & component styles
-├── popup.js            # Popup controls, theme toggle, live cache usage & storage listeners
-├── theme-init.js       # Synchronous color-scheme hydration (FOUC prevention, MV3 CSP safe)
-├── src/
-│   ├── matcher.js      # Title/artist/duration/variant scoring & payload extraction
-│   ├── cache.js        # Session & memory mapping store with cross-tab hydration
-│   └── resolver.js     # 3-stage ATV resolver, album VL pairing & cancellable queue lookahead
-├── tests/
-│   └── matcher.test.js # Zero-dependency node:test regression suite for song matching
-├── icons/              # Extension SVG master & 16 / 48 / 128 px PNG icons
-├── assets/             # High-res logo & README showcase preview
-├── .github/            # CI validation, auto-release zip workflow & bug report form
-├── PRIVACY.md          # Local-only privacy disclosure
-└── LICENSE             # GNU General Public License v3.0
+├── public/                 # Static extension assets copied into dist/
+│   ├── manifest.json       # Chrome Extension Manifest V3 definition
+│   ├── icons/              # Extension SVG master & 16 / 48 / 128 px PNG icons
+│   ├── popup/
+│   │   ├── popup.html      # Extension popup layout
+│   │   └── popup.css       # Adaptive Light/Dark design tokens & component styles
+│   └── styles/
+│       └── content.css     # Audio-only 1:1 cover layout for fallback mode (preserves ads)
+├── src/                    # Strict TypeScript source code compiled to dist/
+│   ├── types.d.ts          # Shared TypeScript interfaces for YouTube Music & extension APIs
+│   ├── core/
+│   │   ├── matcher.ts      # Title/artist/duration/variant scoring & payload extraction
+│   │   ├── cache.ts        # Session & memory mapping store with cross-tab hydration
+│   │   └── resolver.ts     # 3-stage on-demand ATV resolver & album VL pairing
+│   ├── content/
+│   │   ├── inject.ts       # MAIN-world fetch/XHR & YTMUSIC_INITIAL_DATA interceptor
+│   │   └── content.ts      # Isolated-world settings bridge, cache sync & Song toggle watcher
+│   └── popup/
+│       ├── popup.ts        # Popup controls, theme toggle, live cache usage & storage listeners
+│       └── theme-init.ts   # Synchronous color-scheme hydration (FOUC prevention, MV3 CSP safe)
+├── scripts/
+│   └── build.mjs           # Compiles TypeScript to dist/ and copies public/ assets
+├── tests/                  # node:test regression suites running against built dist/ modules
+├── assets/                 # High-res logo & README showcase preview
+├── .github/                # CI validation, auto-release zip workflow & bug report form
+├── tsconfig.json           # Strict TypeScript compiler configuration
+├── package.json            # Dev dependencies and build/typecheck/test scripts
+├── PRIVACY.md              # Storage and privacy disclosure
+└── LICENSE                 # GNU General Public License v3.0
 ```
 
 </details>
@@ -130,16 +148,22 @@ ytm-lite/
 
 Bug reports, matching edge-case fixes, and pull requests are welcome.
 
-- **Found a mismatched track?** [Open an issue](https://github.com/fadhilafif98/ytm-lite/issues/new?template=bug_report.yml) with the original track URL and expected audio track so we can refine the scoring rules in `src/matcher.js`.
-- **Developing locally?** Edit any file and click the reload icon on the extension card in `chrome://extensions`, then refresh YouTube Music. Run unit tests anytime with:
+- **Found a mismatched track?** [Open an issue](https://github.com/fadhilafif98/ytm-lite/issues/new?template=bug_report.yml) with the original track URL and expected audio track so we can refine the scoring rules in `src/core/matcher.ts`.
+- **Developing locally?** Run `npm run build`, load `dist/` in `chrome://extensions` (or click reload after rebuilding), then refresh YouTube Music. Run typecheck and unit tests anytime with:
   ```bash
-  node --test tests/*.test.js
+  npm run typecheck && npm test
   ```
 
 ## License
 
 Licensed under the [GNU General Public License v3.0](LICENSE).
 
-## Disclaimer
+<br>
 
-YouTube and YouTube Music are trademarks of Google LLC. YTM Lite is an independent, open-source project and is not affiliated with, endorsed by, or sponsored by Google LLC. This extension modifies playback behavior on the client side and is provided as-is; use at your own discretion in accordance with applicable terms of service.
+> [!WARNING]
+> <h2>Legal disclaimer</h2>
+> <p>This project is not affiliated with, funded, authorized or endorsed by YouTube, YouTube Music, Google LLC, or their affiliates and subsidiaries.</p>
+>
+> <p>All trademarks, service marks, and intellectual property rights referenced in this project belong to their respective owners.</p>
+
+<br/>

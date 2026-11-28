@@ -14,31 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
-      - name: Validate manifest.json and referenced assets
-        run: |
-          node -e "
-            const fs = require('node:fs');
-            const m = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
-            if (m.manifest_version !== 3) throw new Error('Expected manifest_version 3');
-            if (!/^\d+\.\d+\.\d+$/.test(m.version)) throw new Error('Invalid version: ' + m.version);
-            const files = [
-              m.action?.default_popup,
-              ...Object.values(m.icons || {}),
-              ...Object.values(m.action?.default_icon || {}),
-              ...(m.content_scripts || []).flatMap((cs) => [...(cs.js || []), ...(cs.css || [])])
-            ].filter(Boolean);
-            for (const f of files) {
-              if (!fs.existsSync(f)) throw new Error('Missing manifest file: ' + f);
-            }
-            console.log('manifest.json OK (v' + m.version + ', ' + files.length + ' refs verified)');
-          "
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Check JavaScript syntax
-        run: |
-          for f in content.js inject.js popup.js theme-init.js src/*.js tests/*.js; do
-            node --check "$f"
-          done
-
-      - name: Run unit tests
-        run: node --test tests/*.test.js
+      - name: Run full QA gate (typecheck, build, MV3/CSP/icon/CSS checks, unit tests)
+        run: npm run qa
